@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0, minimum-scale=0.5">
+  <title>Ứng dụng báo cáo • BCT & CTV</title>
+  <meta name="theme-color" content="#a8edea">
+  <meta name="apple-mobile-web-app-title" content="BÁO CÁO  BCT & CTV 35">
+  <link rel="manifest" href="manifest.json">
+  <script src="pwa-core.js"></script>
+  <!-- icon.png đặt cùng thư mục -->
+  <link rel="icon" type="image/png" href="icon.png">
+  <!-- Font và style nền xanh nhạt đa màu -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(145deg, #e0f2e9 0%, #c8e6d9 25%, #d4ecdf 50%, #b8dfca 75%, #d9f0e1 100%);
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      margin: 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Họa tiết nền đa sắc nhẹ */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 20% 30%, rgba(165, 215, 185, 0.5) 0%, transparent 45%),
+                  radial-gradient(circle at 80% 70%, rgba(120, 190, 150, 0.4) 0%, transparent 50%),
+                  radial-gradient(circle at 40% 85%, rgba(180, 210, 160, 0.45) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 580px;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(240,255,245,0.75) 100%);
+      border-radius: 1.5rem;
+      box-shadow: 0 30px 50px rgba(50, 90, 70, 0.2), 0 10px 25px rgba(30, 70, 50, 0.15);
+      padding: 2.5rem 2rem;
+      border: 1px solid rgba(90, 140, 110, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .icon-wrapper {
+      background: #eefaf3;
+      padding: 0.8rem;
+      border-radius: 3rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-icon {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 8px rgba(0,70,40,0.2));
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #1f4b33, #2d6a4f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.25rem;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: #2f5a45;
+      font-weight: 500;
+      font-size: 1rem;
+      background: rgba(220, 240, 225, 0.7);
+      padding: 0.35rem 1.4rem;
+      border-radius: 1rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .button-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+      margin: 2rem 0 1.2rem;
+    }
+
+    .report-btn {
+      border: none;
+      background: #ffffffdd;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(105deg, #f6fff9 0%, #eafbf2 100%);
+      border: 1.5px solid #b6d7c2;
+      border-radius: 1rem;
+      padding: 1.6rem 1.8rem;
+      font-weight: 650;
+      font-size: 1.5rem;
+      letter-spacing: 0.3px;
+      color: #1d4730;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 15px 25px -10px rgba(40, 90, 60, 0.25);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .report-btn:hover {
+      transform: translateY(-3px);
+      background: #f0fef6;
+      border-color: #7ebc94;
+      box-shadow: 0 22px 35px -12px rgba(35, 95, 60, 0.35);
+    }
+
+    .report-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 10px 18px -8px rgba(35, 80, 50, 0.3);
+    }
+
+    .btn-bct {
+      background: linear-gradient(105deg, #dff0e5 0%, #c5e3d2 100%);
+      border-color: #8bb99b;
+    }
+
+    .btn-ctv {
+      background: linear-gradient(105deg, #e3f3ea 0%, #cfe6d9 100%);
+      border-color: #93bda4;
+    }
+
+    .btn-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .btn-title {
+      font-size: 1.7rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .btn-desc {
+      font-size: 0.9rem;
+      font-weight: 500;
+      opacity: 0.8;
+      color: #205134;
+    }
+
+    .lock-icon {
+      font-size: 2.4rem;
+      filter: drop-shadow(0 4px 5px rgba(0,60,30,0.3));
+    }
+
+    /* Modal nhập mật khẩu */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(25, 55, 40, 0.5);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .password-modal {
+      background: #f6fff8;
+      max-width: 380px;
+      width: 90%;
+      padding: 2rem 1.8rem;
+      border-radius: 1rem;
+      background: linear-gradient(145deg, #ffffff 0%, #ecf9f0 100%);
+      box-shadow: 0 35px 55px rgba(20, 70, 45, 0.45);
+      text-align: center;
+      border: 1px solid #bee0cc;
+      transform: scale(0.95);
+      transition: transform 0.25s;
+    }
+
+    .active .password-modal {
+      transform: scale(1);
+    }
+
+    .modal-title {
+      font-weight: 700;
+      font-size: 1.7rem;
+      color: #1b4b2e;
+      margin-bottom: 0.5rem;
+    }
+
+    .target-label {
+      background: #daf1e3;
+      display: inline-block;
+      padding: 0.3rem 1.3rem;
+      border-radius: 5px;
+      font-weight: 600;
+      color: #1e5633;
+      margin-bottom: 1.4rem;
+      font-size: 1.1rem;
+    }
+
+    /* Container cho input và nút mắt */
+    .password-input-container {
+      position: relative;
+      width: 100%;
+      margin: 0.5rem 0 1.2rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.9rem 3.2rem 0.9rem 1.2rem;
+      font-size: 1.1rem;
+      border: 1.8px solid #cfe5d5;
+      border-radius: 0.5rem;
+      background: white;
+      outline: none;
+      transition: 0.2s;
+      font-weight: 500;
+    }
+
+    input:focus {
+      border-color: #3c8d63;
+      box-shadow: 0 0 0 4px rgba(60, 140, 90, 0.2);
+    }
+
+    /* Nút toggle ẩn/hiện mật khẩu */
+    .toggle-password {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2d6a4f;
+      font-size: 1.3rem;
+      transition: 0.2s;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+    }
+
+    .toggle-password:hover {
+      background: rgba(45, 106, 79, 0.1);
+      color: #1b422b;
+    }
+
+    .toggle-password:active {
+      transform: translateY(-50%) scale(0.92);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      padding: 0.8rem 1.8rem;
+      border-radius: 1.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      background: #e2f0e7;
+      color: #1b422b;
+      transition: 0.2s;
+      border: 1px solid #bcdbc7;
+      backdrop-filter: blur(4px);
+    }
+
+    .btn-primary {
+      background: #2d6a4f;
+      color: white;
+      border: 1px solid #2d6a4f;
+      box-shadow: 0 8px 16px rgba(30, 100, 60, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #1f4d36;
+    }
+
+    .btn:hover {
+      transform: scale(1.02);
+    }
+
+    .error-message {
+      color: #c54b4b;
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+      font-weight: 500;
+      min-height: 1.2rem;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 2rem;
+      color: #386a4b;
+      font-weight: 500;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 450px) {
+      .container {
+        padding: 2rem 1.3rem;
+      }
+      .report-btn {
+        padding: 1.3rem 1.2rem;
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="icon-wrapper">
+        <!-- icon.png cùng thư mục, nếu chưa có sẽ hiển thị fallback emoji -->
+        <img src="icon.png" alt="Logo" class="page-icon" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=font-size:3.2rem;>📊</span>';">
+      </div>
+      <h1>TẠO BÁO CÁO</h1>
+      <div class="subtitle">Ban công tác & Cộng tác viên</div>
+    </div>
+
+    <div class="button-panel">
+      <!-- Nút BCT 35 -->
+      <button class="report-btn btn-bct" id="btnBCT">
+        <div class="btn-text">
+          <span class="btn-title">BCT 35</span>
+          <span class="btn-desc">Ban công tác</span>
+        </div>
+        <span class="lock-icon">🔐</span>
+      </button>
+
+      <!-- Nút CTV 35 -->
+      <button class="report-btn btn-ctv" id="btnCTV">
+        <div class="btn-text">
+          <span class="btn-title">CTV 35</span>
+          <span class="btn-desc">Cộng tác viên</span>
+        </div>
+        <span class="lock-icon">🔐</span>
+      </button>
+    </div>
+    <div class="footer-note">
+      Vui lòng nhập đúng mật khẩu để tiếp tục
+    </div>
+  </div>
+
+  <!-- Modal nhập mật khẩu (dùng chung) -->
+  <div class="modal-overlay" id="passwordModal">
+    <div class="password-modal">
+      <div class="modal-title">🔒 Xác thực</div>
+      <div class="target-label" id="modalTargetName">BCT 35</div>
+      
+      <!-- Container chứa input và nút toggle -->
+      <div class="password-input-container">
+        <input type="password" id="passwordInput" placeholder="Nhập mật khẩu..." autocomplete="off">
+        <button type="button" class="toggle-password" id="togglePasswordBtn" aria-label="Hiện mật khẩu">
+          👁️
+        </button>
+      </div>
+      
+      <div id="passwordError" class="error-message"></div>
+      <div class="modal-actions">
+        <button class="btn" id="cancelModalBtn">Hủy</button>
+        <button class="btn btn-primary" id="submitPasswordBtn">Truy cập</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // Hash SHA-256 của mật khẩu thực tế (được tạo từ trang sha256 online)
+      // Mật khẩu gốc: bct35tk -> hash tương ứng
+      const BCT_HASH = "1d312ce69ab667d3ca8c013f870d35a5f2db06e775df1a0e275b2b16f2f778b4";
+      // Mật khẩu gốc: ctv35tk -> hash tương ứng
+      const CTV_HASH = "685ffd9ccd24f2c7a2fb04e60d196e42ca5a490a58080d602bc33b6740d0c513";
+      
+      // Kiểm tra: tạo hash từ SHA256 (dùng Web Crypto API)
+      async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+      }
+
+      const modalOverlay = document.getElementById('passwordModal');
+      const modalTargetName = document.getElementById('modalTargetName');
+      const passwordInput = document.getElementById('passwordInput');
+      const passwordError = document.getElementById('passwordError');
+      const submitBtn = document.getElementById('submitPasswordBtn');
+      const cancelBtn = document.getElementById('cancelModalBtn');
+      const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+      const btnBCT = document.getElementById('btnBCT');
+      const btnCTV = document.getElementById('btnCTV');
+
+      let currentTarget = null; // 'bct' hoặc 'ctv'
+      let expectedHash = '';
+      let isPasswordVisible = false;
+
+      // Hàm mở modal
+      function openModal(targetType, displayName, hash) {
+        currentTarget = targetType;
+        expectedHash = hash;
+        modalTargetName.textContent = displayName;
+        passwordInput.value = '';
+        passwordError.textContent = '';
+        // Reset trạng thái ẩn mật khẩu
+        passwordInput.type = 'password';
+        isPasswordVisible = false;
+        togglePasswordBtn.innerHTML = '👁️';
+        togglePasswordBtn.setAttribute('aria-label', 'Hiện mật khẩu');
+        modalOverlay.classList.add('active');
+        setTimeout(() => passwordInput.focus(), 100);
+      }
+
+      // Đóng modal
+      function closeModal() {
+        modalOverlay.classList.remove('active');
+        currentTarget = null;
+        expectedHash = '';
+        passwordInput.value = '';
+        passwordError.textContent = '';
+        // Reset trạng thái
+        passwordInput.type = 'password';
+        isPasswordVisible = false;
+        togglePasswordBtn.innerHTML = '👁️';
+      }
+
+      // Hàm toggle ẩn/hiện mật khẩu
+      function togglePasswordVisibility() {
+        isPasswordVisible = !isPasswordVisible;
+        
+        if (isPasswordVisible) {
+          passwordInput.type = 'text';
+          togglePasswordBtn.innerHTML = '🙈';
+          togglePasswordBtn.setAttribute('aria-label', 'Ẩn mật khẩu');
+        } else {
+          passwordInput.type = 'password';
+          togglePasswordBtn.innerHTML = '👁️';
+          togglePasswordBtn.setAttribute('aria-label', 'Hiện mật khẩu');
+        }
+        
+        // Giữ focus vào input sau khi toggle
+        passwordInput.focus();
+      }
+
+      // Xử lý truy cập sau khi kiểm tra mật khẩu
+      async function handleAccess() {
+        const inputPassword = passwordInput.value.trim();
+        if (!inputPassword) {
+          passwordError.textContent = 'Vui lòng nhập mật khẩu.';
+          return;
+        }
+
+        // Tính hash từ mật khẩu người dùng nhập
+        let inputHash;
+        try {
+          inputHash = await sha256(inputPassword);
+        } catch (e) {
+          passwordError.textContent = 'Lỗi xử lý, thử lại.';
+          return;
+        }
+
+        // So sánh với hash mong đợi (đã lưu)
+        if (inputHash === expectedHash) {
+          // Mở file tương ứng
+          if (currentTarget === 'bct') {
+            window.location.href = 'AppBanCongTac.html';
+          } else if (currentTarget === 'ctv') {
+            window.location.href = 'AppCongTacVien.html';
+          } else {
+            passwordError.textContent = 'Không xác định được đích.';
+          }
+        } else {
+          passwordError.textContent = 'Mật khẩu không chính xác.';
+          passwordInput.value = '';
+          // Reset về trạng thái ẩn mật khẩu
+          passwordInput.type = 'password';
+          isPasswordVisible = false;
+          togglePasswordBtn.innerHTML = '👁️';
+          passwordInput.focus();
+        }
+      }
+
+      // Gán sự kiện
+      btnBCT.addEventListener('click', () => {
+        openModal('bct', 'BCT 35 • Ban công tác', BCT_HASH);
+      });
+
+      btnCTV.addEventListener('click', () => {
+        openModal('ctv', 'CTV 35 • Cộng tác viên', CTV_HASH);
+      });
+
+      // Toggle password visibility
+      togglePasswordBtn.addEventListener('click', togglePasswordVisibility);
+
+      submitBtn.addEventListener('click', handleAccess);
+
+      cancelBtn.addEventListener('click', closeModal);
+
+      // Đóng modal khi click ngoài vùng modal
+      modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+          closeModal();
+        }
+      });
+
+      // Cho phép nhấn Enter trong ô input
+      passwordInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleAccess();
+        }
+      });
+
+      // Xác nhận lại hash chính xác (phòng trường copy nhầm) 
+      console.log('Giao diện sẵn sàng. Hash BCT:', BCT_HASH, 'Hash CTV:', CTV_HASH);
+    })();
+  </script>
+</body>
+</html>
